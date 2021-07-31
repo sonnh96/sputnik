@@ -20,6 +20,18 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     </head>
     <body>
+        <header style="display: none;">
+            <div class="header-banner">
+                <h1>Sputnik</h1>
+            </div>
+            <div class="clear"></div>
+            <nav>
+                <div class="site-title">Sputnik</div>
+                <ul>
+                    <li><button class="btn btn-1 btn-1a">Register now</button></li>
+                <ul>
+            </nav>
+        </header>
         <div class="app wow">
             <div id="menu-sputnick" class="wow bounceInUp" data-wow-duration="2s">
                 <div class="container">
@@ -65,7 +77,7 @@
             </div>  
             
             <div id="dao-company" class="bxslider">
-                <div class="container">
+                <div class="container wow slideInLeft">
                     <div class="content-about">
                         <div class="about-dao">
                             <h3 class="text-about-dao">Democracy, powered by the Internet.</h3>
@@ -343,5 +355,20 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bxslider/4.2.15/jquery.bxslider.min.js"></script>
         <script src="assets/js/wow.min.js" ></script>
         <script src="assets/js/main.js" ></script>
+        <script id="rendered-js" >
+            $(window).scroll(function () {
+              if ($(window).scrollTop() >= 300) {
+                $('header').show();
+                $('nav').addClass('fixed-header');
+                $('nav div').addClass('visible-title');
+              } else
+              {
+                $('header').hide();
+                $('nav').removeClass('fixed-header');
+                $('nav div').removeClass('visible-title');
+              }
+            });
+        </script>
+
     </body>
 </html>
