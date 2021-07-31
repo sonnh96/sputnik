@@ -1,159 +1,187 @@
 $(function () {
-    const releaseTime = new Date(Date.UTC(2021, 04, 10, 04, 00, 0, 0)).getTime();
-    const endTime = new Date(Date.UTC(2021, 07, 31, 04, 00, 0, 0)).getTime();
+    (function () {
+  var Util,
+  __bind = function (fn, me) {return function () {return fn.apply(me, arguments);};};
 
-    function getNowUTC() {
-        return Date.now();
+  Util = function () {
+    function Util() {}
+
+    Util.prototype.extend = function (custom, defaults) {
+      var key, value;
+      for (key in custom) {
+        value = custom[key];
+        if (value != null) {
+          defaults[key] = value;
+        }
+      }
+      return defaults;
+    };
+
+    Util.prototype.isMobile = function (agent) {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(agent);
+    };
+
+    return Util;
+
+  }();
+
+  this.WOW = function () {
+    WOW.prototype.defaults = {
+      boxClass: 'wow',
+      animateClass: 'animated',
+      offset: 0,
+      mobile: true };
+
+
+    function WOW(options) {
+      if (options == null) {
+        options = {};
+      }
+      this.scrollCallback = __bind(this.scrollCallback, this);
+      this.scrollHandler = __bind(this.scrollHandler, this);
+      this.start = __bind(this.start, this);
+      this.scrolled = true;
+      this.config = this.util().extend(options, this.defaults);
     }
-    function injectGA() {
-        if (typeof window == 'undefined') {
-            return;
-        }
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            window.dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
 
-        gtag('config', 'G-FP8LS6GWYD');
+    WOW.prototype.init = function () {
+      var _ref;
+      this.element = window.document.documentElement;
+      if ((_ref = document.readyState) === "interactive" || _ref === "complete") {
+        return this.start();
+      } else {
+        return document.addEventListener('DOMContentLoaded', this.start);
+      }
     };
 
-    $(document).ready(function () {
-        wow = new WOW({
-                      boxClass:     'wow',      // default
-                      animateClass: 'animated', // default
-                      offset:       0,          // default
-                      mobile:       true,       // default
-                      live:         true        // default
-                    })
-        wow.init();
-    });
+    WOW.prototype.start = function () {
+      var box, _i, _len, _ref;
+      this.boxes = this.element.getElementsByClassName(this.config.boxClass);
+      if (this.boxes.length) {
+        if (this.disabled()) {
+          return this.resetStyle();
+        } else {
+          _ref = this.boxes;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            box = _ref[_i];
+            this.applyStyle(box, true);
+          }
+          window.addEventListener('scroll', this.scrollHandler, false);
+          window.addEventListener('resize', this.scrollHandler, false);
+          return this.interval = setInterval(this.scrollCallback, 50);
+        }
+      }
+    };
 
-    let forms = document.getElementsByClassName('needs-validation');
-    // Loop over them and prevent submission
-    let validation = Array.prototype.filter.call(forms, function (form) {
-        form.addEventListener('submit', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const now = getNowUTC();
-            if (now < releaseTime) {
-                console.warn('Token Sales is comming soon, please submit later.');
-                return;
-            } else if (now > endTime) {
-                console.warn('Token Sales is over, cannot submit.');
-                return;
-            } else {
-                const yourBudget = $('#your-budget').val();
-                const yourBudgetLength = yourBudget.length;
-                const yourFilteredBudget = yourBudget.substring(0, yourBudgetLength - 3).split("").filter(
-                    item =>
-                        item !== ",").join("");
-                const priceBudget = parseInt(yourFilteredBudget);
-                const yourAddress = $('#your-address').val().substring(0, 2);
-                const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-                const isValidEmail = emailRegex.test($('#your-email').val());
-                console.log(isValidEmail)
-                if (form.checkValidity() === false) {
-                    console.warn('Form validated: fail.');
-                    form.classList.add('was-validated');
-                    if (!isValidEmail) {
-                        $('#invalid-feedback-email').addClass('active');
-                        if ($('#your-email').val()) {
-                            $('#invalid-feedback-email').text("Your Email errors!");
-                        } else {
-                            $('#invalid-feedback-email').text("Please input your email address.");
-                        }
-                    } else {
-                        $('#invalid-feedback-email').removeClass('active');
-                    }
-                    if (yourAddress) {
-                        if (yourAddress !== "0x" || $('#your-address').val().length < 42) {
-                            document.getElementById("invalid-feedback-address").innerHTML =
-                                "Your Address errors!";
-                            $('#invalid-feedback-address').addClass('active');
-                        }
-                        return
-                    } else {
-                        $('#invalid-feedback-address').text('Please input your ETH address.');
-                    }
-                    if (priceBudget <= 0) {
-                        document.getElementById("invalid-feedback-budget").innerHTML =
-                            "Your Budget price errors!";
-                        $('#invalid-feedback-budget').addClass('active');
-                        return;
-                    }
-                } else {
-                    if (priceBudget <= 0) {
-                        document.getElementById("invalid-feedback-budget").innerHTML =
-                            "Your budget price errors!";
-                        $('#invalid-feedback-budget').addClass('active');
-                        return;
-                    }
-                    if (yourAddress !== "0x") {
-                        document.getElementById("invalid-feedback-address").innerHTML =
-                            "Your Address errors!";
-                        $('#invalid-feedback-address').addClass('active');
-                    } else {
-                        console.info('Form validated: success.');
-                        $('#invalid-feedback-budget').removeClass('active');
-                        submitForm();
-                    }
-                }
+    WOW.prototype.stop = function () {
+      window.removeEventListener('scroll', this.scrollHandler, false);
+      window.removeEventListener('resize', this.scrollHandler, false);
+      if (this.interval != null) {
+        return clearInterval(this.interval);
+      }
+    };
+
+    WOW.prototype.show = function (box) {
+      this.applyStyle(box);
+      return box.className = "" + box.className + " " + this.config.animateClass;
+    };
+
+    WOW.prototype.applyStyle = function (box, hidden) {
+      var delay, duration, iteration;
+      duration = box.getAttribute('data-wow-duration');
+      delay = box.getAttribute('data-wow-delay');
+      iteration = box.getAttribute('data-wow-iteration');
+      return box.setAttribute('style', this.customStyle(hidden, duration, delay, iteration));
+    };
+
+    WOW.prototype.resetStyle = function () {
+      var box, _i, _len, _ref, _results;
+      _ref = this.boxes;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        box = _ref[_i];
+        _results.push(box.setAttribute('style', 'visibility: visible;'));
+      }
+      return _results;
+    };
+
+    WOW.prototype.customStyle = function (hidden, duration, delay, iteration) {
+      var style;
+      style = hidden ? "visibility: hidden; -webkit-animation-name: none; -moz-animation-name: none; animation-name: none;" : "visibility: visible;";
+      if (duration) {
+        style += "-webkit-animation-duration: " + duration + "; -moz-animation-duration: " + duration + "; animation-duration: " + duration + ";";
+      }
+      if (delay) {
+        style += "-webkit-animation-delay: " + delay + "; -moz-animation-delay: " + delay + "; animation-delay: " + delay + ";";
+      }
+      if (iteration) {
+        style += "-webkit-animation-iteration-count: " + iteration + "; -moz-animation-iteration-count: " + iteration + "; animation-iteration-count: " + iteration + ";";
+      }
+      return style;
+    };
+
+    WOW.prototype.scrollHandler = function () {
+      return this.scrolled = true;
+    };
+
+    WOW.prototype.scrollCallback = function () {
+      var box;
+      if (this.scrolled) {
+        this.scrolled = false;
+        this.boxes = function () {
+          var _i, _len, _ref, _results;
+          _ref = this.boxes;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            box = _ref[_i];
+            if (!box) {
+              continue;
             }
-        });
-    });
-
-    const submitForm = (() => {
-        window.location = 'mailto:info.sales@s-one.finance?subject=Request Buy SONE Token&body=' +
-            'Your Name: ' + $('#your-name').val() + '%0D%0A' +
-            'Your Email: ' + $('#your-email').val() + '%0D%0A' +
-            'Your ETH Address: ' + $('#your-address').val() + '%0D%0A' +
-            'Your Budget: $' + $('#your-budget').val().replace(/^[0,]+/, '') + '%0D%0A' +
-            'Your Payment: ' + $('#your-payment').val();
-    })
-
-    function changeTitleToEn() {
-        document.getElementById("language-main").innerHTML = 'EN';
-        document.getElementById("language-main-moblie").innerHTML = 'EN';
+            if (this.isVisible(box)) {
+              this.show(box);
+              continue;
+            }
+            _results.push(box);
+          }
+          return _results;
+        }.call(this);
+        if (!this.boxes.length) {
+          return this.stop();
+        }
+      }
     };
 
-    function changeTitleToJp() {
-        document.getElementById("language-main").innerHTML = '';
-        document.getElementById("language-main-moblie").innerHTML = '日本語';
+    WOW.prototype.offsetTop = function (element) {
+      var top;
+      top = element.offsetTop;
+      while (element = element.offsetParent) {
+        top += element.offsetTop;
+      }
+      return top;
     };
-    $('.btn-ct').click(() => {
-        $('.sub-menu').addClass("active", 1000, "easeInOutQuad");
-    });
-    $('.btn-close').click(() => {
-        $('.sub-menu').removeClass("active");
-    });
-    $('.content-link').click(() => {
-        $('.sub-menu').removeClass("active");
-    });
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-    $('.bxslider').bxSlider({
-        mode: 'vertical',
-        auto: false,
-        slideMargin: 0,
-        infiniteLoop: false,
-        pager: false,
-        controls: true,
-        minSlides: 4,
-        maxSlides: 4,
-        moveSlides: 1,
-        hideControlOnEnd: true,
-        preventDefaultSwipeY: true,
-        preventDefaultSwipeX: true,
-        touchEnabled: true,
-        slideSelector: 'div.box-slide-item',
-        touchEnabled: false
-    });
+    WOW.prototype.isVisible = function (box) {
+      var bottom, offset, top, viewBottom, viewTop;
+      offset = box.getAttribute('data-wow-offset') || this.config.offset;
+      viewTop = window.pageYOffset;
+      viewBottom = viewTop + this.element.clientHeight - offset;
+      top = this.offsetTop(box);
+      bottom = top + box.clientHeight;
+      return top <= viewBottom && bottom >= viewTop;
+    };
+
+    WOW.prototype.util = function () {
+      return this._util || (this._util = new Util());
+    };
+
+    WOW.prototype.disabled = function () {
+      return !this.config.mobile && this.util().isMobile(navigator.userAgent);
+    };
+
+    return WOW;
+
+  }();
+
+}).call(this);
+
 });

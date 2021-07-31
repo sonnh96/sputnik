@@ -20,11 +20,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     </head>
     <body>
-        <header style="display: none;">
-            <div class="header-banner">
-                <h1>Sputnik</h1>
-            </div>
-            <div class="clear"></div>
+        <header>
             <nav>
                 <div class="site-title">Sputnik</div>
                 <ul>
@@ -32,7 +28,7 @@
                 <ul>
             </nav>
         </header>
-        <div class="app wow">
+        <div id="container" class="app">
             <div id="menu-sputnick" class="wow bounceInUp" data-wow-duration="2s">
                 <div class="container">
                     <img class="elip-img" src="./assets/img/figma2/Frame 9500.png" alt="elip">
@@ -76,7 +72,7 @@
                 </div>
             </div>  
             
-            <div id="dao-company" class="bxslider">
+            <div id="dao-company">
                 <div class="container wow slideInLeft">
                     <div class="content-about">
                         <div class="about-dao">
@@ -90,7 +86,7 @@
                     </div>
                     <div id="compare">
                         <div class="compare-item header-compare">
-                            <div class="dao">
+                            <div class="dao wow bounceInUp">
                                 <div class="box-text">
                                     <h4 class="fontSize-16 bold-text dao-text">DAO</h4>
                                 </div>
@@ -128,7 +124,7 @@
                                 
                             </div> 
                             -->
-                            <div class="dao">
+                            <div class="dao wow bounceInUp">
                                 <div class="box-text">
                                     <h4 class="fontSize-16 bold-text dao-text">Company</h4>
                                 </div>
@@ -357,17 +353,21 @@
         <script src="assets/js/main.js" ></script>
         <script id="rendered-js" >
             $(window).scroll(function () {
-              if ($(window).scrollTop() >= 300) {
-                $('header').show();
+              if ($(window).scrollTop() >= 200) {
                 $('nav').addClass('fixed-header');
                 $('nav div').addClass('visible-title');
               } else
               {
-                $('header').hide();
                 $('nav').removeClass('fixed-header');
                 $('nav div').removeClass('visible-title');
               }
             });
+            wow = new WOW({
+              animateClass: 'animated',
+              offset: 100 });
+
+
+            wow.init();
         </script>
 
     </body>
